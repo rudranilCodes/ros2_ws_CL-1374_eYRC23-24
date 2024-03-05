@@ -19,10 +19,10 @@
 amcl:
   ros__parameters:
     use_sim_time: False
-    alpha1: 0.05 #0.05
+    alpha1: 0.08 #0.05
     alpha2: 0.08 #0.08
-    alpha3: 0.005 #0.005
-    alpha4: 0.008 #0.08
+    alpha3: 0.01 #0.005
+    alpha4: 0.01 #0.08
     alpha5: 0.00005
     base_frame_id: "base_footprint"
     beam_skip_distance: 0.5
@@ -35,11 +35,11 @@ amcl:
     laser_max_range: 100.0
     laser_min_range: -1.0
     laser_model_type: "likelihood_field"
-    max_beams: 60
-    max_particles: 3000
-    min_particles: 600
+    max_beams: 100
+    max_particles: 10000
+    min_particles: 2000
     odom_frame_id: "odom"
-    pf_err: 0.01
+    pf_err: 0.05
     pf_z: 0.99
     recovery_alpha_fast: 0.0
     recovery_alpha_slow: 0.0
@@ -49,8 +49,8 @@ amcl:
     sigma_hit: 0.2
     tf_broadcast: true
     transform_tolerance: 0.5
-    update_min_a: 0.2
-    update_min_d: 0.25
+    update_min_a: 0.03 #0.2
+    update_min_d: 0.03 #10
     z_hit: 0.5
     z_max: 0.05
     z_rand: 0.5
@@ -163,18 +163,18 @@ controller_server:
       min_vel_y: 0.0
       max_vel_x: 0.5 #0.26
       max_vel_y: 0.0
-      max_vel_theta: 1.0 #1.5
+      max_vel_theta: 0.5 #1.5
       min_speed_xy: 0.0
-      max_speed_xy: 0.26 #0.26
+      max_speed_xy: 0.20 #0.26
       min_speed_theta: 0.0
       # Add high threshold velocity for turtlebot 3 issue.
       # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
-      acc_lim_x: 0.5 #2.5
+      acc_lim_x: 0.3 #2.5
       acc_lim_y: 0.0
-      acc_lim_theta: 2.0 #3.2
+      acc_lim_theta: 0.7 #3.2
       decel_lim_x: -0.5
       decel_lim_y: 0.0
-      decel_lim_theta: -2.0
+      decel_lim_theta: -1.5
       vx_samples: 10
       vy_samples: 2
       vtheta_samples: 20
@@ -205,7 +205,7 @@ controller_server_rclcpp_node:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 5.0
+      update_frequency: 5.0 
       publish_frequency: 2.0
       global_frame: map      # set to {map} to avoid map rotation problem with amcl 
       robot_base_frame: ebot_base_link
@@ -359,8 +359,8 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [0.7, 0.0, 1.5]
-    min_velocity: [-0.7, 0.0, -1.5]
+    max_velocity: [0.7, 0.0, 0.5]
+    min_velocity: [-0.7, 0.0, -0.5]
     max_accel: [1.29, 0.0, 0.7]
     min_decel: [-1.29, 0.0, -0.7]
     odom_topic: "/odometry/filtered"
