@@ -54,7 +54,7 @@ class MyRobotDockingController(Node):
         self.usrleft_value = 1.5
         self.usrright_value = 1.5        
         self.desired_distance = 0.1 # Replace with your desired distance
-        self.kp = 0.3 # Adjust as needed  
+        self.kp = 0.25 # Adjust as needed  
         self.orientation_value = 0.0
         self.orientation_error = 0.0
         self.kp_orientation = 0.5
@@ -66,7 +66,7 @@ class MyRobotDockingController(Node):
        
 
         # Initialize a timer for the main control loop
-        self.timer=self.create_timer(2.0,self.controller_loop)
+        self.timer=self.create_timer(1.0,self.controller_loop)
     # Callback function for odometry data
     def odometry_callback(self, msg):
         # Extract and update robot pose information from odometry message
@@ -79,8 +79,8 @@ class MyRobotDockingController(Node):
 
     # Callback function for the left ultrasonic sensor
     def ultra_callback(self,msg):
-        self.usrleft_value= msg.data[4]/100.00+0.02
-        self.usrright_value = msg.data[5]/100.00+0.02
+        self.usrleft_value= msg.data[4]/100.00
+        self.usrright_value = msg.data[5]/100.00
     # Callback function for the right ultrasonic sensor
     #
     #
@@ -128,7 +128,7 @@ class MyRobotDockingController(Node):
                         cmd.linear.x = linear_velocity
                         print(f"Stopping with linear velocity: {cmd.linear.x}")
                         self.velocity_publisher.publish(cmd)
-                        time.sleep(1.0)
+                        time.sleep(0.5)
                     else:
                         cmd = Twist()
                         cmd.linear.x = 0.0
@@ -163,11 +163,11 @@ class MyRobotDockingController(Node):
                         self.is_docking=True
                         self.dock_aligned=False
                     else:"""
-                    if min(self.usrleft_value,self.usrright_value) > 0.14:
+                    if max(self.usrleft_value,self.usrright_value) > 0.40:
                         error_left = self.desired_distance - self.usrleft_value
                         
                         error_right = self.desired_distance - self.usrright_value
-                        self.kp_docking = max(self.usrleft_value,self.usrright_value)*1.0
+                        self.kp_docking = 0.2
 
                         print("error left:", error_left)
                         print("error right:", error_right)
@@ -183,6 +183,12 @@ class MyRobotDockingController(Node):
 
                     else:
                         cmd = Twist()
+                        cmd.linear.x=-0.06
+                        self.velocity_publisher.publish(cmd)
+                        print(f"docking in process")
+                        time.sleep(6.0)
+                        print(f"done")
+
                         cmd.linear.x = 0.0
                         cmd.linear.y = 0.0
                         cmd.angular.z = 0.0 
@@ -190,7 +196,7 @@ class MyRobotDockingController(Node):
                         print(f"Bodda")
                         self.is_docking=False
                         self.dock_aligned=True
-                        time.sleep(3.0)
+                        time.sleep(4.0)
                     pass
 
 
@@ -215,7 +221,7 @@ class MyRobotDockingController(Node):
         self.get_logger().info("Docking started!")
 
         # Create a rate object to control the loop frequency
-        rate = self.create_rate(0.50, self.get_clock())
+        rate = self.create_rate(1.0, self.get_clock())
 
         # Wait until the robot is aligned for docking
         while not self.dock_aligned:
