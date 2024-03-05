@@ -71,7 +71,6 @@ class USB_Relay(Node):
         future = ebot_attacher.call_async(req)
         rclpy.spin_until_future_complete(self, future)
 
-
 class Docking(Node):
     def __init__(self):
         super().__init__('Docking_client')
@@ -91,7 +90,7 @@ class Docking(Node):
         #req.undocking=undocking
         req.distance1 = distance1  
         req.distance2 = distance2    
-        req.orientation  =orientation 
+        req.orientation =orientation 
         req.rack_no=str(rack_no)
         future = ebot_docker.call_async(req)
         rclpy.spin_until_future_complete(self, future)
@@ -108,6 +107,7 @@ class Docking(Node):
 class MyBotNavigator(Node):
     def __init__(self):
         super().__init__('my_bot_navigator')
+        self.velocity_publisher = self.create_publisher(Twist, 'cmd_vel', 10)
        
         global flag
         #self.success = 0
@@ -129,13 +129,13 @@ class MyBotNavigator(Node):
         self.navigator.waitUntilNav2Active()
 
 
-        ############################################# FOR RACK 3 ###############################################
+        ############################################# FOR RACK 3 #########################################################
         goal_pose = PoseStamped()
         goal_pose.header.frame_id = 'map'
         goal_pose.header.stamp = self.navigator.get_clock().now().to_msg()
-        goal_pose.pose.position.x = rack3_xy_yaw[0] +0.8 #0.5, 2.05, 0.0
-        goal_pose.pose.position.y = rack3_xy_yaw[1] + 0.20
-        goal_pose.pose.orientation.z =  r3[2]
+        goal_pose.pose.position.x = rack3_xy_yaw[0] +1.0 #0.5, 2.05, 0.0
+        goal_pose.pose.position.y = rack3_xy_yaw[1] +0.10
+        goal_pose.pose.orientation.z = r3[2]
         goal_pose.pose.orientation.w = r3[3]
 
         # sanity check a valid path exists
@@ -184,22 +184,28 @@ class MyBotNavigator(Node):
             print('Goal has an invalid return status!')
         attach_detach = USB_Relay()
         attach_detach.run_usb(1,1)
-        docking=Docking()
-        docking.run_docker(float(rack3_xy_yaw[0]-0.2),float(rack3_xy_yaw[1]+0.20),float(rack3_xy_yaw[2]+0.17),'rack3',False)
-        """command="ros2 param set /global_costmap/global_costmap robot_radius 0.45"
+
+        command="ros2 param set /global_costmap/global_costmap robot_radius 0.20"
         output = subprocess.check_output(command, shell=True, text=True)
         print(output)
-""" 
+
+        docking=Docking()
+        docking.run_docker(float(rack3_xy_yaw[0]),float(rack3_xy_yaw[1]+0.10),float(rack3_xy_yaw[2]+0.10),'rack3',False)
+
+        #time.sleep(5.0)
         flag=0
         self.publisher_function()
         goal_pose = PoseStamped()
         goal_pose.header.frame_id = 'map'
         goal_pose.header.stamp = self.navigator.get_clock().now().to_msg()
         goal_pose.pose.position.x = rack3_dock_xy_yaw[0]-0.85
-        goal_pose.pose.position.y =rack3_dock_xy_yaw[1]
+        goal_pose.pose.position.y =rack3_dock_xy_yaw[1]-0.20
         goal_pose.pose.orientation.z = rd3[2]
         goal_pose.pose.orientation.w = rd3[3]
         self.navigator.goToPose(goal_pose)
+        command="ros2 param set /global_costmap/global_costmap robot_radius 0.30"
+        output = subprocess.check_output(command, shell=True, text=True)
+        print(output)
         i = 0
         while not self.navigator.isTaskComplete():
             ################################################
@@ -236,9 +242,14 @@ class MyBotNavigator(Node):
             print('Goal failed!')
         else:
             print('Goal has an invalid return status!')
-        
-        docking.run_docker(float(rack3_dock_xy_yaw[0]),float(rack3_dock_xy_yaw[1]),float(rack3_dock_xy_yaw[2]),'rack3',True)
+
+        command="ros2 param set /global_costmap/global_costmap robot_radius 0.20"
+        output = subprocess.check_output(command, shell=True, text=True)
+        print(output)
+
+        docking.run_docker(float(rack3_dock_xy_yaw[0]+0.25),float(rack3_dock_xy_yaw[1]-0.20),float(rack3_dock_xy_yaw[2]+0.05),'rack3',True)
         attach_detach.run_usb(1,0)
+        time.sleep(2.0)
         flag=1
         self.publisher_function()
         #################################################FOR RACK 2##############################################################
@@ -295,12 +306,15 @@ class MyBotNavigator(Node):
         else:
             print('Goal has an invalid return status!')
 
+        command="ros2 param set /global_costmap/global_costmap robot_radius 0.30"
+        output = subprocess.check_output(command, shell=True, text=True)
+        print(output)
 
         goal_pose = PoseStamped()
         goal_pose.header.frame_id = 'map'
         goal_pose.header.stamp = self.navigator.get_clock().now().to_msg()
-        goal_pose.pose.position.x = rack2_xy_yaw[0]+0.75
-        goal_pose.pose.position.y = rack2_xy_yaw[1]+0.20
+        goal_pose.pose.position.x = rack2_xy_yaw[0]+1.0
+        goal_pose.pose.position.y = rack2_xy_yaw[1]-0.20
         goal_pose.pose.orientation.z = r2[2]
         goal_pose.pose.orientation.w = r2[3]
 
@@ -348,13 +362,16 @@ class MyBotNavigator(Node):
             print('Goal failed!')
         else:
             print('Goal has an invalid return status!')
-        
-        
+    
+        command="ros2 param set /global_costmap/global_costmap robot_radius 0.20"
+        output = subprocess.check_output(command, shell=True, text=True)
+        print(output)
+
         attach_detach.run_usb(1,1)
-        docking.run_docker(float(rack2_xy_yaw[0]), float(rack2_xy_yaw[1]+0.20),float(rack2_xy_yaw[2]),'rack2',False)
+        docking.run_docker(float(rack2_xy_yaw[0]), float(rack2_xy_yaw[1]-0.20),float(rack2_xy_yaw[2]-0.08),'rack2',False)   
         flag=0
         self.publisher_function()
-        
+    
         
         goal_pose = PoseStamped()
         goal_pose.header.frame_id = 'map'
@@ -366,7 +383,9 @@ class MyBotNavigator(Node):
 
         # sanity check a valid path exists
         # path = navigator.getPath(initial_pose, goal_pose)
-
+        command="ros2 param set /global_costmap/global_costmap robot_radius 0.20"
+        output = subprocess.check_output(command, shell=True, text=True)
+        print(output)
         self.navigator.goToPose(goal_pose)
 
 
@@ -408,8 +427,9 @@ class MyBotNavigator(Node):
             print('Goal failed!')
         else:
             print('Goal has an invalid return status!')
-        docking.run_docker(float(rack2_dock_xy_yaw[0]),float(rack2_dock_xy_yaw[1]),float(rack2_dock_xy_yaw[2]),'rack2',True)
+        docking.run_docker(float(rack2_dock_xy_yaw[0]),float(rack2_dock_xy_yaw[1]+0.10),float(rack2_dock_xy_yaw[2]+0.10),'rack2',True)
         attach_detach.run_usb(1,0)
+        time.sleep(2.0)
         flag=1
         self.publisher_function()
         self.navigator.lifecycleShutdown()
