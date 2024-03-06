@@ -23,6 +23,7 @@ import math, statistics
 import pytest
 import time
 
+global flag, error_flag
 # Define a class for your ROS2 node
 class MyRobotDockingController(Node):
 
@@ -106,6 +107,7 @@ class MyRobotDockingController(Node):
         # The controller loop manages the robot's linear and angular motion 
         # control to achieve docking alignment and executio
         #if self.is_docking:
+        global flag, error_flag
         if self.linear_dock:
             if self.is_docking:
                 if self.orientation_error > 0.20 or self.orientation_error < -0.20 :
@@ -118,9 +120,19 @@ class MyRobotDockingController(Node):
                     self.dock_aligned=False
 
                 else:
-                    error1=abs(self.distance1-self.robot_pose[0])
-                    error2=abs(self.distance2-self.robot_pose[1])
-                    error = max(error1,error2)
+                    if flag == 0:
+                        error1=abs(self.distance1-self.robot_pose[0])
+                        error2=abs(self.distance2-self.robot_pose[1])
+                        if error1>error2:
+                            error_flag = 0
+                        else:
+                            error_flag = 1
+                    flag = 1
+                    if error_flag == 0:
+                        error = self.distance1 - self.robot_pose[0]
+                    else:
+                        error = self.distance2 - self.robot_pose[1]
+                        
                     if abs(error) > 0.5:
                         print(f"Linear Error: {error}")
                         linear_velocity = -self.kp * error
@@ -197,6 +209,7 @@ class MyRobotDockingController(Node):
                         self.is_docking=False
                         self.dock_aligned=True
                         time.sleep(4.0)
+                        flag = 0
                     pass
 
 
