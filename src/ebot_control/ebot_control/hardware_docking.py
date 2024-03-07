@@ -120,37 +120,20 @@ class MyRobotDockingController(Node):
                     self.dock_aligned=False
 
                 else:
-                    if flag == 0:
-                        error1=abs(self.distance1-self.robot_pose[0])
-                        error2=abs(self.distance2-self.robot_pose[1])
-                        if error1>error2:
-                            error_flag = 0
-                        else:
-                            error_flag = 1
-                    flag = 1
-                    if error_flag == 0:
-                        error = abs(self.distance1 - self.robot_pose[0])
-                    else:
-                        error = abs(self.distance2 - self.robot_pose[1])
-                        
-                    if abs(error) > 0.5:
-                        print(f"Linear Error: {error}")
-                        linear_velocity = -self.kp * error
-                        cmd = Twist()
-                        cmd.linear.x = linear_velocity
-                        print(f"Stopping with linear velocity: {cmd.linear.x}")
-                        self.velocity_publisher.publish(cmd)
-                        time.sleep(0.5)
-                    else:
-                        cmd = Twist()
-                        cmd.linear.x = 0.0
-                        cmd.linear.y = 0.0
-                        cmd.angular.z = 0.0 
-                        print(f"Boddi")
-                        self.velocity_publisher.publish(cmd)
-                        self.is_docking=False
-                        self.dock_aligned=True
-                    pass
+
+                    cmd = Twist()
+                    cmd.linear.x = -0.08
+                    print(f"Stopping with linear velocity: {cmd.linear.x}")
+                    self.velocity_publisher.publish(cmd)
+                    time.sleep(6.0)
+                    ###stop after sometime###
+                    cmd.linear.x = 0.0
+                    cmd.linear.y = 0.0
+                    cmd.angular.z = 0.0 
+                    print(f"Boddi")
+                    self.velocity_publisher.publish(cmd)
+                    self.is_docking=False
+                    self.dock_aligned=True
         else:
             ultra_error = self.usrleft_value - self.usrright_value
 
