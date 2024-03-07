@@ -129,9 +129,9 @@ class MyRobotDockingController(Node):
                             error_flag = 1
                     flag = 1
                     if error_flag == 0:
-                        error = self.distance1 - self.robot_pose[0]
+                        error = abs(self.distance1 - self.robot_pose[0])
                     else:
-                        error = self.distance2 - self.robot_pose[1]
+                        error = abs(self.distance2 - self.robot_pose[1])
                         
                     if abs(error) > 0.5:
                         print(f"Linear Error: {error}")
