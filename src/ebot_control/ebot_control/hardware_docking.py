@@ -183,7 +183,9 @@ class MyRobotDockingController(Node):
                         print(f"docking in process")
                         time.sleep(8.0)
                         print(f"done")
-
+                        cmd.linear.x=0.06
+                        self.velocity_publisher.publish(cmd)
+                        time.sleep(3.0)
                         cmd.linear.x = 0.0
                         cmd.linear.y = 0.0
                         cmd.angular.z = 0.0 
