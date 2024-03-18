@@ -233,10 +233,7 @@ class MyBotNavigator(Node):
         # path = navigator.getPath(initial_pose, goal_pose)
 
         self.navigator.goToPose(goal_pose)
-
-
         
-
         i = 0
         while not self.navigator.isTaskComplete():
         ################################################
@@ -388,59 +385,6 @@ class MyBotNavigator(Node):
         else:
             print('Goal has an invalid return status!')
 
-        
-        goal_pose = PoseStamped()
-        goal_pose.header.frame_id = 'map'
-        goal_pose.header.stamp = self.navigator.get_clock().now().to_msg()
-        goal_pose.pose.position.x = rack3_dock_xy_yaw[0]-0.65
-        goal_pose.pose.position.y = rack3_dock_xy_yaw[1]
-        goal_pose.pose.orientation.z = rd3[2]
-        goal_pose.pose.orientation.w = rd3[3]
-
-        # sanity check a valid path exists
-        # path = navigator.getPath(initial_pose, goal_pose)
-
-        self.navigator.goToPose(goal_pose)
-
-
-        
-
-        i = 0
-        while not self.navigator.isTaskComplete():
-        ################################################
-        #
-        # Implement some code here for your application!
-        #
-        ################################################
-            self.publisher_function()
-        # Do something with the feedback
-            i = i + 1
-            feedback = self.navigator.getFeedback()
-            if feedback and i % 5 == 0:
-                print('Estimated time of arrival: ' + '{:.0f}'.format(
-                    Duration.from_msg(feedback.estimated_time_remaining).nanoseconds)
-                    + ' seconds.')
-
-                # Some navigation timeout to demo cancellation
-                if Duration.from_msg(feedback.navigation_time) > Duration(seconds=600.0):
-                    self.navigator.cancelTask()
-
-                # Some navigation request change to demo preemption
-                if Duration.from_msg(feedback.navigation_time) > Duration(seconds=18.0):
-    
-                    self.navigator.goToPose(goal_pose)
-
-
-                # Do something depending on the return code
-        result = self.navigator.getResult()
-        if result == TaskResult.SUCCEEDED:
-            print('Goal succeeded!')
-        elif result == TaskResult.CANCELED:
-            print('Goal was canceled!')
-        elif result == TaskResult.FAILED:
-            print('Goal failed!')
-        else:
-            print('Goal has an invalid return status!')
 
         param.call_param_change(mode=1)
 
