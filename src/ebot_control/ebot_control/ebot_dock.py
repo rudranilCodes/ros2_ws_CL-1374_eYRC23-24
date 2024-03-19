@@ -421,7 +421,7 @@ class MyBotNavigator(Node):
         goal_pose.header.frame_id = 'map'
         goal_pose.header.stamp = self.navigator.get_clock().now().to_msg()
         goal_pose.pose.position.x = rack2_xy_yaw[0]+1.0
-        goal_pose.pose.position.y = rack2_xy_yaw[1]-0.10
+        goal_pose.pose.position.y = rack2_xy_yaw[1]-0.15
         goal_pose.pose.orientation.z = r2[2]
         goal_pose.pose.orientation.w = r2[3]
 
@@ -478,7 +478,7 @@ class MyBotNavigator(Node):
         # print(output)
 
         attach_detach.run_usb(1,1)
-        docking.run_docker(float(rack2_xy_yaw[0]), float(rack2_xy_yaw[1]-0.10),float(rack2_xy_yaw[2]-0.10),'rack2',False)   
+        docking.run_docker(float(rack2_xy_yaw[0]), float(rack2_xy_yaw[1]-0.15),float(rack2_xy_yaw[2]-0.18),'rack2',False)   
         flag=0
         self.publisher_function()
 
