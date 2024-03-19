@@ -58,7 +58,7 @@ class MyRobotDockingController(Node):
         self.kp = 0.25 # Adjust as needed  
         self.orientation_value = 0.0
         self.orientation_error = 0.0
-        self.kp_orientation = 0.7
+        self.kp_orientation = 0.8
         self.kp_ultra = 0.7
         self.robot_pose = [0.0,0.0,0.0]
         self.distance1=0.0
