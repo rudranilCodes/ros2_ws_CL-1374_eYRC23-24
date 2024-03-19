@@ -478,7 +478,7 @@ class MyBotNavigator(Node):
         # print(output)
 
         attach_detach.run_usb(1,1)
-        docking.run_docker(float(rack2_xy_yaw[0]), float(rack2_xy_yaw[1]-0.15),float(rack2_xy_yaw[2]-0.20),'rack2',False)   
+        docking.run_docker(float(rack2_xy_yaw[0]), float(rack2_xy_yaw[1]-0.10),float(rack2_xy_yaw[2]-0.10),'rack2',False)   
         flag=0
         self.publisher_function()
 
