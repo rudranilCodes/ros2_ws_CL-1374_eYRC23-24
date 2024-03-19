@@ -599,7 +599,7 @@ class MyBotNavigator(Node):
 
         gparam.call_param_change(mode=0)
 
-        docking.run_docker(float(rack2_dock_xy_yaw[0]),float(rack2_dock_xy_yaw[1]+0.20),float(rack2_dock_xy_yaw[2]+0.15),'rack2',True)
+        docking.run_docker(float(rack2_dock_xy_yaw[0]),float(rack2_dock_xy_yaw[1]+0.20),float(-rack2_dock_xy_yaw[2]+0.15),'rack2',True)
         attach_detach.run_usb(1,0)
         time.sleep(2.0)
         flag=1
