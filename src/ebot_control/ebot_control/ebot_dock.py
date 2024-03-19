@@ -146,8 +146,7 @@ class MyBotNavigator(Node):
         super().__init__('my_bot_navigator')
         self.velocity_publisher = self.create_publisher(Twist, 'cmd_vel', 10)
         
-        lparam=Lparamchange()
-        lparam.call_param_change(mode=0)
+
         
         global flag
         #self.success = 0
@@ -229,6 +228,9 @@ class MyBotNavigator(Node):
         
         gparam.call_param_change(mode=0)
 
+        lparam=Lparamchange()
+        lparam.call_param_change(mode=0)
+
         # command="ros2 param set /global_costmap/global_costmap robot_radius 0.20"
         # output = subprocess.check_output(command, shell=True, text=True)
         # print(output)
@@ -295,7 +297,7 @@ class MyBotNavigator(Node):
 
 
         gparam.call_param_change(mode=1)
-
+        lparam.call_param_change(mode=1)
 
          ############################################# FOR RACK 3 UNDOCk #########################################################
 
@@ -469,6 +471,7 @@ class MyBotNavigator(Node):
             print('Goal has an invalid return status!')
 
         gparam.call_param_change(mode=0)
+        lparam.call_param_change(mode=0)
     
         # command="ros2 param set /global_costmap/global_costmap robot_radius 0.20"
         # output = subprocess.check_output(command, shell=True, text=True)
@@ -533,6 +536,7 @@ class MyBotNavigator(Node):
             print('Goal has an invalid return status!')
 
         gparam.call_param_change(mode=1)
+        lparam.call_param_change(mode=1)
 
 
         #################################################FOR RACK 2 UNDOCk##############################################################
